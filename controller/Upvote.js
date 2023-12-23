@@ -1,8 +1,9 @@
 const upvoteModel = require("../models/upvote");
 const downvoteModel = require("../models/downvote");
 const answerModel = require("../models/Answer");
+const { DeleteTheDowncount } = require("./DownVote");
 
-async function upvote(req, res) {
+async function Addupvote(req, res) {
   const { answer_id } = req.body;
   const user_id = req.user.id;
   const availableAnswer = await answerModel.find({
@@ -13,9 +14,16 @@ async function upvote(req, res) {
       user_id: user_id,
       answer_id: answer_id,
     });
+    const ifUserHaveDownVotedThisAnswer = await downvoteModel.find({
+      user_id: user_id,
+      answer_id: answer_id,
+    });
     if (ifUserHaveUpVotedThisAnswer) {
       console.log(`Cannot vote again for the same answer`);
     } else {
+      if (ifUserHaveDownVotedThisAnswer) {
+        DeleteTheDowncount(answer_id, user_id);
+      }
       try {
         const newUpvote = await upvoteModel.create({
           user_id,
@@ -50,12 +58,9 @@ async function upvoteCount(req, res) {
   }
 }
 
-async function DeleteTheUpcount(req, res) {
-  const { answer_id } = req.body;
-  const user_id = req.user.id;
-
+async function DeleteTheUpcount(answer_id, user_id) {
   try {
-    const DeletedUpCount = await upvoteModel.deleteOne({
+    await upvoteModel.deleteOne({
       user_id,
       answer_id,
     });
@@ -66,3 +71,9 @@ async function DeleteTheUpcount(req, res) {
     console.log(`error encountered while deleting the upvote ${e}`);
   }
 }
+
+module.exports = {
+  Addupvote,
+  DeleteTheUpcount,
+  upvoteCount,
+};
