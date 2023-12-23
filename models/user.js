@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema({
     required: [true, "please add the user password"],
   },
   DOB: {
-    type: dat,
+    type: Date,
+    required: [true, "Please add the Date "],
   },
 });
+
+module.exports = mongoose.model("user", userSchema);
