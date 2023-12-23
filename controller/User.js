@@ -30,3 +30,44 @@ async function registerUser(req, res) {
     throw new Erro("User registration failed");
   }
 }
+
+async function userLogin(req, res) {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("All fields are mandatory");
+  }
+
+  const availableUser = await userModel.findOn({
+    email,
+  });
+
+  if (
+    availableUser &&
+    (await bcrypt.compare(password, availableUser.password))
+  ) {
+    const accessToken = jwt.sign(
+      {
+        user: {
+          username: availableUser.username,
+          email: availableUser.email,
+          id: availableUser.id,
+        },
+      },
+      process.env.TOKEN_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.status(200).cookie("accestoekn", accessToken, {
+      httpOnly: true,
+    });
+  } else {
+    throw new Error("Incorrect password or Email");
+  }
+}
+
+async function getCurrentUser(req, res) {
+  res.json(req.user);
+}
