@@ -17,7 +17,7 @@ async function addQuestion(req, res) {
 
 async function listQuestion(req, res) {
   try {
-    const questionString = req.body;
+    const questionString = req.body.questionString;
     let filter;
     if (questionString != null) {
       filter = {
@@ -45,3 +45,8 @@ async function listQuestion(req, res) {
     console.log(`Error occured ${e}`);
   }
 }
+
+module.exports = {
+  listQuestion,
+  addQuestion,
+};
