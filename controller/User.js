@@ -60,7 +60,7 @@ async function userLogin(req, res) {
       }
     );
 
-    res.status(200).cookie("accestoekn", accessToken, {
+    res.status(200).cookie("accestoken", accessToken, {
       httpOnly: true,
     });
   } else {
@@ -71,3 +71,9 @@ async function userLogin(req, res) {
 async function getCurrentUser(req, res) {
   res.json(req.user);
 }
+
+module.exports = {
+  registerUser,
+  userLogin,
+  getCurrentUser,
+};
