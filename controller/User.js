@@ -60,7 +60,7 @@ async function userLogin(req, res) {
       }
     );
 
-    res.status(200).cookie("accestoken", accessToken, {
+    res.status(200).cookie("accesstoken", accessToken, {
       httpOnly: true,
     });
   } else {
