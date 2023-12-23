@@ -49,3 +49,20 @@ async function upvoteCount(req, res) {
     console.log(`Answer is not availabe that is related to ${answer_id}`);
   }
 }
+
+async function DeleteTheUpcount(req, res) {
+  const { answer_id } = req.body;
+  const user_id = req.user.id;
+
+  try {
+    const DeletedUpCount = await upvoteModel.deleteOne({
+      user_id,
+      answer_id,
+    });
+    console.log(
+      `You had Upvoted this answer ealier and in order to Down Vote This answer we have to Delete the Earlier Upvote`
+    );
+  } catch (e) {
+    console.log(`error encountered while deleting the upvote ${e}`);
+  }
+}
