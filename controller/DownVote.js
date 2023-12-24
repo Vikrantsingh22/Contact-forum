@@ -1,7 +1,20 @@
 const upvoteModel = require("../models/upvote");
 const downvoteModel = require("../models/downvote");
 const answerModel = require("../models/Answer");
-const { DeleteTheUpcount } = require("./Upvote");
+
+async function DeleteTheUpcount(answer_id, user_id) {
+  try {
+    await upvoteModel.deleteOne({
+      user_id,
+      answer_id,
+    });
+    console.log(
+      `You had Upvoted this answer ealier and in order to Down Vote This answer we have to Delete the Earlier Upvote`
+    );
+  } catch (e) {
+    console.log(`error encountered while deleting the upvote ${e}`);
+  }
+}
 
 async function AddDownVote(req, res) {
   const { answer_id } = req.body;
@@ -9,7 +22,7 @@ async function AddDownVote(req, res) {
   const availableAnswer = await answerModel.find({
     _id: answer_id,
   });
-  if (availableAnswer) {
+  if (availableAnswer[0]) {
     const ifUserHaveDownVotedThisAnswer = await downvoteModel.find({
       user_id: user_id,
       answer_id: answer_id,
@@ -18,11 +31,13 @@ async function AddDownVote(req, res) {
       user_id: user_id,
       answer_id: answer_id,
     });
-    if (ifUserHaveDownVotedThisAnswer) {
+    if (ifUserHaveDownVotedThisAnswer[0]) {
       console.log(`Cannot down vote again for the same answer`);
+      console.log(ifUserHaveDownVotedThisAnswer[0]);
     } else {
-      if (ifUserHaveUpVotedThisAnswer) {
+      if (ifUserHaveUpVotedThisAnswer[0]) {
         DeleteTheUpcount(answer_id, user_id);
+        console.log(ifUserHaveUpVotedThisAnswer[0]);
       }
       try {
         const newDownvote = await downvoteModel.create({
@@ -50,8 +65,9 @@ async function DownvoteCount(req, res) {
         answer_id: answer_id,
       });
       console.log(
-        `Total UpvoteCount for this answer is ${TotalDownVoteCounts}`
+        `Total DownvoteCount for this answer is ${TotalDownVoteCounts}`
       );
+      res.json({ msg: TotalDownVoteCounts });
     } catch (e) {
       console.log(`Error occurred while fetching upovote for ${answer_id}`);
     }

@@ -3,13 +3,14 @@ const QuestionModel = require("../models/Questions");
 async function addQuestion(req, res) {
   const { questionString } = req.body;
   const user_id = req.user.id;
+  console.log(user_id);
   try {
     const newQuestion = await QuestionModel.create({
       questionString,
       user_id,
     });
     console.log(newQuestion.id);
-    res.status(200);
+    res.status(200).send("Question added");
   } catch (e) {
     console.log(`Question do not get added ${e}`);
   }
@@ -17,7 +18,7 @@ async function addQuestion(req, res) {
 
 async function listQuestion(req, res) {
   try {
-    const questionString = req.body.questionString;
+    let questionString = req.body.questionString;
     let filter;
     if (questionString != null) {
       filter = {
@@ -26,16 +27,16 @@ async function listQuestion(req, res) {
         },
       };
     } else {
-      filter = 0;
+      filter = {};
     }
 
-    const { limit, page } = req.query;
-    const QuestionList = await QuestionModel.find(filter)
+    let { limit, page } = req.query;
+    let QuestionList = await QuestionModel.find(filter)
       .limit((limit = 0))
       .skip((page - 1) * limit);
-    const count = await QuestionModel.count();
-    const totalPages = Math.ceil(count / limit);
-    const Question = { totalPages, data: QuestionList };
+    let count = await QuestionModel.countDocuments();
+    let totalPages = Math.ceil(count / limit);
+    let Question = { totalPages, data: QuestionList };
     if (Question) {
       res.json({
         res: Question,

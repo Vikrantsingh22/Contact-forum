@@ -15,7 +15,6 @@ const userSchema = new mongoose.Schema({
   },
   DOB: {
     type: Date,
-    required: [true, "Please add the Date "],
   },
 });
 

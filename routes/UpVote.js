@@ -7,4 +7,4 @@ const { cookieauthorization } = require("../middleware/CookieAuth");
 router.get("/total", cookieauthorization, upvoteCount);
 router.post("/add", cookieauthorization, Addupvote);
 
-export default router;
+module.exports = router;

@@ -6,6 +6,7 @@ const dotenv = require("dotenv").config();
 const path = require("path");
 const connectdb = require("./util/mongoDB");
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(cookieParser());
 connectdb();

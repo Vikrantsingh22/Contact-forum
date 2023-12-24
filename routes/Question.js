@@ -7,4 +7,4 @@ const { cookieauthorization } = require("../middleware/CookieAuth");
 router.get("/list", cookieauthorization, listQuestion);
 router.post("/add", cookieauthorization, addQuestion);
 
-export default router;
+module.exports = router;

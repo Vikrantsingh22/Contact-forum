@@ -19,4 +19,4 @@ router.get("/current", cookieauthorization, getCurrentUser);
 router.post("/login", userLogin);
 router.post("/register", registerUser);
 
-export default router;
+module.exports = router;

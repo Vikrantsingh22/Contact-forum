@@ -6,6 +6,6 @@ const { cookieauthorization } = require("../middleware/CookieAuth");
 const { route } = require("./Question");
 
 router.get("/list", cookieauthorization, listAnswer);
-router.get("/add", cookieauthorization, addAnswer);
+router.post("/add", cookieauthorization, addAnswer);
 
-export default router;
+module.exports = router;

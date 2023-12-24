@@ -4,11 +4,13 @@ const jwt = require("jsonwebtoken");
 
 async function registerUser(req, res) {
   const { username, email, password, DOB } = req.body;
-  if (!username || !email || !password || !DOB) {
+  const testobject = req.body;
+  console.log(`This is ${testobject}`);
+  if (!username || !email || !password) {
     res.status(400);
     throw new Error("All fields are mandatory");
   }
-
+  console.log(testobject);
   const availableUser = await userModel.findOne({ email });
   if (availableUser) {
     console.log("User Exists");
@@ -19,12 +21,13 @@ async function registerUser(req, res) {
   const newUser = await userModel.create({
     username,
     email,
-    password,
+    password: hashedPassword,
     DOB,
   });
 
   if (newUser) {
     console.log(`New User created successfully ${newUser.id}`);
+    res.json({ newUser });
   } else {
     res.status(400);
     throw new Erro("User registration failed");
@@ -38,7 +41,7 @@ async function userLogin(req, res) {
     throw new Error("All fields are mandatory");
   }
 
-  const availableUser = await userModel.findOn({
+  const availableUser = await userModel.findOne({
     email,
   });
 
@@ -60,9 +63,12 @@ async function userLogin(req, res) {
       }
     );
 
-    res.status(200).cookie("accesstoken", accessToken, {
-      httpOnly: true,
-    });
+    res
+      .status(200)
+      .cookie("accesstoken", accessToken, {
+        httpOnly: true,
+      })
+      .json({ msg: "login succesful" });
   } else {
     throw new Error("Incorrect password or Email");
   }
